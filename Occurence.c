@@ -1,83 +1,80 @@
-#include<stdio.h>
-#include<stdlib.h>
-#include<stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
 
-typedef struct bess{
+typedef struct chaine {
     int val;
-    struct bess *suiv;
-}bess;
+    struct chaine* suiv;
+} chaine;
 
-void rechercheDerniereOccurrence(bess* liste, int element) {
-    int positionDerniereOccurrence = -1;
+chaine* create(int valeur) {
+    chaine* nouveau = (chaine*)malloc(sizeof(chaine));
+    nouveau->val = valeur;
+    nouveau->suiv = NULL;
+    return nouveau;
+}
 
-    bess* courant = liste;
-    int index = 0;
+void ajouterElement(chaine** ma_liste, int valeur) {
+    chaine* nouveau = create(valeur);
 
-    while (courant != NULL) {
-        if (courant->val == element) {
-            positionDerniereOccurrence = index;
-        }
-
-        courant = courant->suiv;
-        index++;
-    }
-
-    if (positionDerniereOccurrence != -1) {
-        printf("La valeur %d est présente dans la liste à la position %d .\n", element, positionDerniereOccurrence);
+    if (*ma_liste == NULL) {
+        *ma_liste = nouveau;
     } else {
-        printf("La valeur %d n'est pas présente dans la liste.\n", element);
+        chaine* current = *ma_liste;
+        while (current->suiv != NULL) {
+            current = current->suiv;
+        }
+        current->suiv = nouveau;
     }
 }
 
-int main(){
-     bess *ma_liste=NULL,*tete=NULL,*new;
-    tete=malloc(sizeof(bess));
-     if (tete == NULL) {
-        printf("Erreur lors de l'allocation de mémoire\n");
-        return 1;
+void afficherListe(chaine* ma_liste) {
+    chaine* current = ma_liste;
+    printf("Liste : ");
+    while (current != NULL) {
+        printf("%d -> ", current->val);
+        current = current->suiv;
     }
-    
-    printf("Veuillez entrer l'élément de tête : ");
-    scanf("%d", &(tete->val));
-    tete->suiv = NULL;
-    ma_liste=tete;
+    printf("\n");
+}
 
-     //les autres elements
-    int continuer=1;
+void afficherDernierePosition(chaine* ma_liste, int valeur) {
+    int position = -1;
+    int indice = 0;
+    chaine* current = ma_liste;
 
-    while(continuer !=0){
-        int valeur;
-        printf("Veuillez entrer la valeur suivante\n");
-        scanf("%d",&valeur);
-        
-        if(valeur==-1){
-            continuer=0;
-        }else{
-            new=malloc(sizeof(bess));
-            
-            if(new==NULL){
-                printf("Erreur de segmentation !!\n");
-                return 1;
-            }
-            printf("\t pour sortir de la boucle entrer -1 au prochain tour\n");
-
-            new->val=valeur;
-            new->suiv=NULL;
-            ma_liste->suiv=new;
-            ma_liste=new;
+    while (current != NULL) {
+        if (current->val == valeur) {
+            position = indice;
         }
+        current = current->suiv;
+        indice++;
     }
-    printf("\t LA LISTE REMPLIT  AVEC SUCCESS!! \n");
-    //recherche
-    int element;
-    printf("Veuillez l'element à rechercher\n");
-    scanf("%d",&element);
-    rechercheDerniereOccurrence(ma_liste,element);
 
-//liberation de la memoire
-    
-    free(tete);
+    printf("Dernière position de la valeur %d : %d\n", valeur, position);
+}
+
+int main() {
+    chaine* ma_liste = NULL;
+    int valeur, element;
+
+    printf("Entrez les éléments de la liste chaînée (-1 pour terminer) : \n");
+    while (true) {
+        printf("Élément : ");
+        scanf("%d", &element);
+        if (element == -1) {
+            break;
+        }
+        ajouterElement(&ma_liste, element);
+    }
+
+    printf("Entrez la valeur dont vous souhaitez trouver la dernière position : ");
+    scanf("%d", &valeur);
+
+    printf("Liste : \n");
+    afficherListe(ma_liste);
+
+    afficherDernierePosition(ma_liste, valeur);
 
     return 0;
-
 }
