@@ -27,7 +27,7 @@ int main(){
         int valeur;
         printf("Veuillez entrer la valeur suivante\n");
         scanf("%d",&valeur);
-        printf("\t pour sortir de la boucle entrer -1 au prochain tour\n");
+        
         if(valeur==-1){
             continuer=0;
         }else{
@@ -36,6 +36,7 @@ int main(){
                 printf("Erreur de segmentation !!\n");
                 return 1;
             }
+            printf("\t pour sortir de la boucle entrer -1 au prochain tour\n");
             new->val=valeur;
             new->suivant=NULL;
             ma_liste->suivant=new;
@@ -55,7 +56,8 @@ int main(){
     printf("NULL\n");
     
     // Libérer la mémoire
-    
+   free(ma_liste);
    free(tete);
+   free(new);
     return 0;
 }
